@@ -1,0 +1,83 @@
+// main.lz
+// Entry point demonstrating core Luazi language features:
+// structs, traits, enums, pattern matching, guards, defer, and async/await.
+
+const APP_NAME = "Luazi Demo"
+const VERSION = "0.1.0"
+
+// --- Struct with a method ---
+struct Point {
+    x: number,
+    y: number,
+
+    fn distance(other: Point) -> number {
+        return sqrt((self.x - other.x)^2 + (self.y - other.y)^2)
+    }
+}
+
+// --- Trait + impl ---
+trait Drawable {
+    fn draw()
+}
+
+impl Drawable for Point {
+    fn draw() {
+        print("Point(" + self.x + ", " + self.y + ")")
+    }
+}
+
+// --- Enum for fallible results ---
+enum Result<T, E> {
+    Ok(T),
+    Err(E)
+}
+
+// --- Guard clause ---
+fn divide(a: number, b: number) -> Result<number, string> {
+    guard b != 0 else {
+        return Result::Err("division by zero")
+    }
+    return Result::Ok(a / b)
+}
+
+// --- Pattern matching over the enum ---
+fn describeDivision(a: number, b: number) -> string {
+    match divide(a, b) {
+        Ok(value) => "Result: " + value,
+        Err(e) => "Error: " + e,
+        _ => "Unknown"
+    }
+}
+
+// --- Async function ---
+async fn loadGreeting() -> string {
+    return await httpGet("https://example.com/greeting")
+}
+
+// --- Defer for cleanup ---
+fn processFile(path: string) {
+    let file = open(path)
+    defer close(file)
+    print("Processing " + path)
+}
+
+// --- Program entry point ---
+async fn main() {
+    print(APP_NAME + " v" + VERSION)
+    print("----------------------")
+
+    let a = Point { x: 0, y: 0 }
+    let b = Point { x: 3, y: 4 }
+
+    a.draw()
+    b.draw()
+    print("Distance: " + a.distance(b))
+
+    print(describeDivision(10, 2))
+    print(describeDivision(10, 0))
+
+    let greeting = await loadGreeting()
+    print(greeting)
+}
+
+main()
